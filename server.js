@@ -12,38 +12,55 @@ app.get('/', (req, res) => {
 app.get('/scrape', async (req, res) => {
     const url = req.query.url;
     
+    console.log('=== NEW REQUEST ===');
+    console.log('Target URL:', url);
+    
     if (!url) {
         return res.status(400).send('URL parameter required. Example: /scrape?url=https://example.com');
     }
     
     let browser;
     try {
+        console.log('Launching browser...');
         browser = await puppeteerCore.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
         });
+        console.log('Browser launched');
         
         const page = await browser.newPage();
+        console.log('New page created');
         
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        console.log('User agent set');
         
+        console.log('Navigating to URL...');
         await page.goto(url, { 
-            waitUntil: 'networkidle0',
-            timeout: 30000 
+            waitUntil: 'domcontentloaded',
+            timeout: 60000 
         });
+        console.log('Navigation complete');
         
-        await page.waitForTimeout(2000);
+        console.log('Waiting 3 seconds for JS...');
+        await page.waitForTimeout(3000);
+        console.log('Wait complete');
         
+        console.log('Getting HTML content...');
         const html = await page.content();
+        console.log('HTML retrieved, length:', html.length);
         
         res.send(html);
     } catch (error) {
+        console.error('ERROR OCCURRED:', error.message);
+        console.error('Stack trace:', error.stack);
         res.status(500).send('Error: ' + error.message);
     } finally {
         if (browser) {
+            console.log('Closing browser...');
             await browser.close();
+            console.log('Browser closed');
         }
     }
 });
