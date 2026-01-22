@@ -52,18 +52,10 @@ app.get('/scrape', async (req, res) => {
         });
         console.log('Navigation complete');
         
-        /*console.log('Waiting 3 seconds for JS...');
-        await page.waitForTimeout(3000);
-        console.log('Wait complete');*/
-        console.log('Waiting for actual content...');
-        try {
-            await page.waitForSelector('body.body-film', { timeout: 20000 });
-            console.log('Content loaded successfully');
-        } catch (e) {
-            console.log('Selector timeout, waiting additional 10 seconds...');
-            await page.waitForTimeout(10000);
-        }
-        
+        console.log('Waiting 6 seconds for JS...');
+        await page.waitForTimeout(6000);
+        console.log('Wait complete');
+
         console.log('Getting HTML content...');
         const html = await page.content();
         console.log('HTML retrieved, length:', html.length);
