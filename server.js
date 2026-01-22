@@ -29,8 +29,17 @@ app.get('/scrape', async (req, res) => {
             headless: chromium.headless,
         });
         console.log('Browser launched');
-        
+
         const page = await browser.newPage();
+
+        await page.setViewport({ width: 1920, height: 1080 });
+
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+        });
+
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         console.log('New page created');
         
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
